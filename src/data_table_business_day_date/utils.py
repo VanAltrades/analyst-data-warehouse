@@ -30,10 +30,21 @@ def create_bq_table(credential_path, project_id_string, dataset_name_string, tab
 
     destination_table_string=dataset_name_string+"."+table_name_string
 
+    schema = [
+    {'name': 'Date', 'type': 'DATE'},
+    {'name': 'Day', 'type': 'STRING'},
+    {'name': 'Weekday', 'type': 'INT64'},
+    {'name': 'Week', 'type': 'INT64'},
+    {'name': 'Quarter', 'type': 'INT64'},
+    {'name': 'Year', 'type': 'INT64'},
+    {'name': 'YearHalf', 'type': 'INT64'},
+    {'name': 'BusinessDay', 'type': 'BOOLEAN'},
+]
+
     df.to_gbq( # batch_tracking_file
             destination_table=destination_table_string, 
             project_id=project_id_string, 
             chunksize=2000, 
             if_exists=write_type,
-            # table_schema=table_schema,
+            table_schema=schema,
             credentials=credentials)

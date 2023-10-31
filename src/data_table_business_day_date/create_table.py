@@ -1,16 +1,20 @@
 import datetime
 import pandas as pd
-from config import SYS_PATH, CREDENTIAL_PATH, PROJECT_ID_STRING,DATASET_NAME_STRING,TABLE_NAME_STRING 
-from src.utils import create_bq_table
+from config import PROJECT_ROOT,SRC_ROOT,CREDENTIAL_PATH, PROJECT_ID_STRING,DATASET_NAME_STRING,TABLE_NAME_STRING
+print(PROJECT_ROOT,SRC_ROOT)
+from utils import create_bq_table
+
 
 def generate_daily_date_table(start='2000-01-01', end='2050-12-31'):
     """
     generate a pandas dataframe with daily dates ranging from start to end dates.
     """
     df = pd.DataFrame({"Date": pd.date_range(start, end)})
+    df['Date'] = pd.to_datetime(df['Date'])
     df["Day"] = df.Date.dt.day_name()
     df["Weekday"] = df.Date.dt.weekday
-    df["Week"] = df.Date.dt.weekofyear
+    df['Week'] = df['Date'].dt.isocalendar().week
+    df['Week'] = df['Week'].astype('int32')
     df["Quarter"] = df.Date.dt.quarter
     df["Year"] = df.Date.dt.year
     df["YearHalf"] = (df.Quarter + 1) // 2
